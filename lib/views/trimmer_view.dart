@@ -1,8 +1,12 @@
 import 'dart:io';
 
-import 'package:video_trim_cut/preview.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:video_trimmer/video_trimmer.dart';
+
+import 'video_player_view.dart';
+
+const kmaxVideoLength = 10;
 
 class TrimmerView extends StatefulWidget {
   final File file;
@@ -64,7 +68,7 @@ class _TrimmerViewState extends State<TrimmerView> {
       child: Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(
-          title: const Text("Video Trimmer"),
+          title: const Text("Coupe-vidéo"),
         ),
         body: Builder(
           builder: (context) => Center(
@@ -84,16 +88,27 @@ class _TrimmerViewState extends State<TrimmerView> {
                     onPressed: _progressVisibility
                         ? null
                         : () async {
-                            _saveVideo().then((outputPath) {
+                            _saveVideo().then((outputPath) async {
                               debugPrint('OUTPUT PATH: $outputPath');
+                              if (outputPath != null) {
+                                await GallerySaver.saveVideo(outputPath);
+                              }
                               Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
-                                  builder: (context) => Preview(outputPath),
+                                  builder: (context) =>
+                                      VideoPlayerView(path: outputPath ?? ''),
                                 ),
                               );
                             });
                           },
-                    child: const Text("SAVE"),
+                    child: const Text("Sauvegarder"),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      "Longueur maximale : $kmaxVideoLength secondes",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                   Expanded(
                     child: VideoViewer(trimmer: _trimmer),
@@ -103,7 +118,7 @@ class _TrimmerViewState extends State<TrimmerView> {
                       trimmer: _trimmer,
                       viewerHeight: 50.0,
                       viewerWidth: MediaQuery.of(context).size.width,
-                      maxVideoLength: const Duration(seconds: 10),
+                      maxVideoLength: const Duration(seconds: kmaxVideoLength),
                       onChangeStart: (value) {
                         _startValue = value;
                       },

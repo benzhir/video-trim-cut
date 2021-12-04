@@ -1,6 +1,6 @@
-import 'package:video_trim_cut/home_page.dart';
+import 'views/home_page.dart';
 import 'package:flutter/material.dart';
-import 'package:video_trim_cut/service_locator.dart';
+import 'service_locator.dart';
 
 Future<void> main() async {
   await setupLocator();
@@ -13,7 +13,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Video Trimmer',
+      title: 'Test Technique',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

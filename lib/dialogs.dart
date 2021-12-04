@@ -4,18 +4,49 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:video_trim_cut/trimmer_view.dart';
+import 'views/trimmer_view.dart';
 
 class Dialogs {
+  static askToReadVideoAudio(BuildContext context, Function onTapConfirm) {
+    Alert(
+      context: context,
+      type: AlertType.none,
+      title: "Voulez-vous lire la vidéo/l'audio ?",
+      buttons: [
+        DialogButton(
+          color: Colors.red,
+          child: const Text(
+            "Annuler",
+            style: TextStyle(color: Colors.white, fontSize: 18),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        DialogButton(
+          color: Colors.purple,
+          child: const Text(
+            "Lire",
+            style: TextStyle(color: Colors.white, fontSize: 18),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+            onTapConfirm();
+          },
+        ),
+      ],
+    ).show();
+  }
+
   static uploadFile(context) {
     Alert(
       context: context,
       type: AlertType.none,
-      title: "UPLOAD FROM",
+      title: "Importer depuis :",
       buttons: [
         DialogButton(
             child: const Text(
-              "CAMERA",
+              "Caméra",
               style: TextStyle(color: Colors.white, fontSize: 18),
             ),
             onPressed: () async {
@@ -30,12 +61,15 @@ class Dialogs {
                     return TrimmerView(file);
                   }),
                 );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Fichier introuvable")));
               }
             },
             color: Colors.purple),
         DialogButton(
           child: const Text(
-            "GALLERY",
+            "Galerie",
             style: TextStyle(color: Colors.white, fontSize: 18),
           ),
           onPressed: () async {
@@ -51,6 +85,9 @@ class Dialogs {
                   return TrimmerView(file);
                 }),
               );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Fichier introuvable")));
             }
           },
           color: Colors.red,
